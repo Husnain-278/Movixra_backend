@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import ScreenListView, ScreenDetailView
+from .views import AvailableMoviesView, AvailableShowsView
 
 urlpatterns = [
-    path('',ScreenListView.as_view()),
-    path('<slug:slug>/', ScreenDetailView.as_view()),
+   path('movies/', AvailableMoviesView.as_view()),
+   path('movies/<slug:movie_slug>/available-shows/', AvailableShowsView.as_view()),
 ]

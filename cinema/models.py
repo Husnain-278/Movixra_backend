@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from cloudinary.models import CloudinaryField
+from movies.models import Movie
 # Create your models here.
 
 
@@ -42,20 +43,25 @@ class Screen(models.Model):
     def __str__(self):  
         return f"{self.cinema.name} - {self.name}"
     
-    
+class SeatType(models.Model):
+
+    name = models.CharField(max_length=50)
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    def __str__(self):
+        return self.name
     
 
 class Seat(models.Model):
     
-    SEAT_TYPES = (
-        ('regular', 'Regular'),
-        ('vip', 'VIP'),
-    )
-    
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE, related_name='seats')
     row = models.CharField(max_length=5)
     number = models.PositiveIntegerField()
-    seat_type = models.CharField(max_length=10, choices=SEAT_TYPES, default='regular')
+    seat_type = models.ForeignKey(SeatType, on_delete=models.CASCADE, related_name="seats")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -69,3 +75,61 @@ class Seat(models.Model):
     def __str__(self):
         return f"{self.screen.name} - {self.row}{self.number}"
     
+    
+    
+    
+    
+class Show(models.Model):
+
+    FORMAT_CHOICES = (
+        ("2D", "2D"),
+        ("3D", "3D"),
+        ("IMAX", "IMAX"),
+    )
+
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name="shows"
+    )
+
+    screen = models.ForeignKey(
+        Screen,
+        on_delete=models.CASCADE,
+        related_name="shows"
+    )
+
+    slug = models.SlugField(
+        unique=True,
+        blank=True
+    )
+
+    format_type = models.CharField(
+        max_length=20,
+        choices=FORMAT_CHOICES
+    )
+
+    show_date = models.DateField()
+
+    start_time = models.TimeField()
+
+    end_time = models.TimeField()
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+    def save(self, *args, **kwargs):
+     if not self.slug:  
+        self.slug = slugify(f"{self.movie.title}-{self.screen.name}-{self.start_time}")
+     super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.movie.title} - {self.start_time}"
+
+    
+    
+

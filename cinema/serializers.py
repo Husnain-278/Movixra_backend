@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Screen, Seat
+from .models import Screen, Seat, Show
 
 class ScreenListSerializer(serializers.ModelSerializer):
     cinema = serializers.CharField(source = 'cinema.name', read_only=True)
@@ -46,4 +46,22 @@ class ScreenDetailSerializer(serializers.ModelSerializer):
             'slug', 
             'seats',
             'created_at'
+        ]
+        
+        
+        
+class AvailableShowsSerializer(serializers.ModelSerializer):
+    movie = serializers.CharField(source = 'movie.title', read_only=True)
+    screen = serializers.CharField(source='screen.name')
+    class Meta:
+        model = Show
+        fields = [
+            'movie',
+            'screen',
+            'slug',
+            'format_type', 
+            'show_date',
+            'start_time', 
+            'end_time',
+            'is_active'
         ]

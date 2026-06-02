@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'movies',
     'cinema',
     'booking',
+    'payment',
     # Third-party apps
     'cloudinary',
     'cloudinary_storage',
@@ -151,3 +152,11 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+
+#Paypal setup
+
+PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID')
+PAYPAL_SECRET = os.getenv('PAYPAL_SECRET')
+
+PAYPAL_BASE_URL = "https://api-m.sandbox.paypal.com"
